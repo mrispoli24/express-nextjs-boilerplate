@@ -37,3 +37,11 @@ Contentful is setup by default to use their javascript SDK. Note that on the ser
 **Why use server side routes at all?**
 
 This helps protect your api keys and space id from being exposed in the front end code. So it is recommended for all services like this that you use the environment file to store your keys and mask them within express.
+
+## Styles
+
+Styles can be done via style jsx for components or just use standard CSS in the `/static/styles` directory. *Note: packages for SASS and CSS for this project were horribly under-documented and did not make easy use of things like @import which would allow for niceties like SASS variables and mixins. Long story short CSS should be relatively minimal if using styled JSX and we can now use CSS variables native support.*
+
+## Fonts and Images
+
+Fonts and images can go into the `/assets` directory either in their own folders or in bulk. We can then import fonts into the stylesheets as needed from there.
