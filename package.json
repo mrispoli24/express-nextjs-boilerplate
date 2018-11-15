@@ -13,8 +13,6 @@
     "start": "NODE_ENV=production node server.js"
   },
   "dependencies": {
-    "@zeit/next-sass": "^1.0.1",
-    "axios": "^0.18.0",
     "contentful": "^7.0.5",
     "contentful-resolve-response": "^1.1.4",
     "dotenv": "^6.0.0",
