@@ -1,0 +1,35 @@
+{
+  "private": true,
+  "name": "express-nextjs-boilerplate",
+  "description": "",
+  "version": "0.0.0",
+  "author": "MRISPOLI24",
+  "license": "MIT",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "heroku-postbuild": "next build",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js"
+  },
+  "dependencies": {
+    "@zeit/next-sass": "^1.0.1",
+    "axios": "^0.18.0",
+    "contentful": "^7.0.5",
+    "contentful-resolve-response": "^1.1.4",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.4",
+    "express-basic-auth": "^1.1.5",
+    "isomorphic-unfetch": "^3.0.0",
+    "marked": "^0.5.0",
+    "morgan": "^1.9.0",
+    "next": "^7.0.2",
+    "node-sass": "^4.10.0",
+    "react": "^16.6.1",
+    "react-dom": "^16.6.1",
+    "react-markdown": "^4.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  }
+}
