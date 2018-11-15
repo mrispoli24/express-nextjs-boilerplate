@@ -5,7 +5,7 @@ const cluster = require('cluster');
 const debug = require('debug')('quiddity:server');
 const http = require('http');
 const numCPUs = require('os').cpus().length;
-const port = normalizePort(process.env.PORT || '3000');
+const port = process.env.PORT || '3000';
 // express/next setup
 const express = require('express');
 const path = require('path');
@@ -16,11 +16,11 @@ const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev });
 const handle = app.getRequestHandler();
 // server routes
+const api = require('./server/routes/api');
+// pages
 const index = require('./server/routes/index');
 const about = require('./server/routes/about');
 const articles = require('./server/routes/articles');
-const api = require('./server/routes/api');
-
 
 app.prepare().then(() => {
     const server = express();
@@ -49,74 +49,87 @@ app.prepare().then(() => {
     server.use(bodyParser.json());
 
     // setup server routes
+    server.use('/api', api);
+
+    // pages
     server.use('/', index);
     server.use('/about', about);
     server.use('/articles', articles);
-    server.use('/api', api);
     
     // next/js routes that don't require backend routes
     server.get('*', (req, res) => {
         return handle(req, res);
     });
 
-    server.set('port', port);
+    if (dev) {
+        // if in development don't use cluster api since this causes webpack hot reload to behave erratically
+        server.listen(port, (err) => {
+            if (err) throw err
+            console.log('> Development server ready on http://localhost:3000')
+        });
+    }
+    else {
+        // cluster api for production only
+        server.set('port', port);
 
-    // setup workers for concurrency
-    if (cluster.isMaster) {
-        // Fork workers.
-        for (let i = 0; i < numCPUs; i++) {
-            cluster.fork();
-        }
-    
-        // If a worker dies, log it to the console and start another worker.
-        cluster.on('exit', (worker, code, signal) => {
-            console.log('Worker ' + worker.process.pid + ' died.');
-            cluster.fork();
-        });
-    
-        // Log when a worker starts listening
-        cluster.on('listening', (worker, address) => {
-            console.log('Worker started with PID ' + worker.process.pid + '.');
-        });
+        // setup workers for concurrency
+        if (cluster.isMaster) {
+            // Fork workers.
+            for (let i = 0; i < numCPUs; i++) {
+                cluster.fork();
+            }
         
-    } else {
-        //Create HTTP server.
-        let ns = http.createServer(server);
+            // If a worker dies, log it to the console and start another worker.
+            cluster.on('exit', (worker, code, signal) => {
+                console.log('Worker ' + worker.process.pid + ' died.');
+                cluster.fork();
+            });
+        
+            // Log when a worker starts listening
+            cluster.on('listening', (worker, address) => {
+                console.log('Worker started with PID ' + worker.process.pid + '.');
+            });
+            
+        } 
+        else {
+            //Create HTTP server.
+            let ns = http.createServer(server);
 
-        // Listen on provided port, on all network interfaces.    
-        ns.listen(port);
-    
-        ns.on('error', (error) => {
-            if (error.syscall !== 'listen') {
-                throw error;
-            }
-    
-            const bind = typeof port === 'string'
-                ? 'Pipe ' + port
-                : 'Port ' + port;
-    
-            // handle specific listen errors with friendly messages
-            switch (error.code) {
-                case 'EACCES':
-                    console.error(bind + ' requires elevated privileges');
-                    process.exit(1);
-                    break;
-                case 'EADDRINUSE':
-                    console.error(bind + ' is already in use');
-                    process.exit(1);
-                    break;
-                default:
+            // Listen on provided port, on all network interfaces.    
+            ns.listen(port);
+        
+            ns.on('error', (error) => {
+                if (error.syscall !== 'listen') {
                     throw error;
-            }
-        });
-    
-        ns.on('listening', () => {
-            const addr = ns.address();
-            const bind = typeof addr === 'string'
-                ? 'pipe ' + addr
-                : 'port ' + addr.port;
-            debug('Listening on ' + bind);
-        });
+                }
+        
+                const bind = typeof port === 'string'
+                    ? 'Pipe ' + port
+                    : 'Port ' + port;
+        
+                // handle specific listen errors with friendly messages
+                switch (error.code) {
+                    case 'EACCES':
+                        console.error(bind + ' requires elevated privileges');
+                        process.exit(1);
+                        break;
+                    case 'EADDRINUSE':
+                        console.error(bind + ' is already in use');
+                        process.exit(1);
+                        break;
+                    default:
+                        throw error;
+                }
+            });
+        
+            ns.on('listening', () => {
+                const addr = ns.address();
+                const bind = typeof addr === 'string'
+                    ? 'pipe ' + addr
+                    : 'port ' + addr.port;
+                debug('Listening on ' + bind);
+            });
+        }
     }
 
 })
@@ -124,24 +137,4 @@ app.prepare().then(() => {
     console.error(ex.stack);
     process.exit(1);
 });
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val) {
-	let port = parseInt(val, 10);
-
-	if (isNaN(port)) {
-		// named pipe
-		return val;
-	}
-
-	if (port >= 0) {
-		// port number
-		return port;
-	}
-
-	return false;
-}
 
