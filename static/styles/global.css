@@ -1,3 +1,6 @@
+/* http://tachyons.io/ is not a requirement but trust me it's worth it... */
+@import url("https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css");
+
 .example {
     margin: 20px;
     padding: 20px;

@@ -40,8 +40,18 @@ This helps protect your api keys and space id from being exposed in the front en
 
 ## Styles
 
-Styles can be done via style jsx for components or just use standard CSS in the `/static/styles` directory. *Note: packages for SASS and CSS for this project were horribly under-documented and did not make easy use of things like @import which would allow for niceties like SASS variables and mixins. Long story short CSS should be relatively minimal if using styled JSX and we can now use CSS variables native support.*
+Styles can be done via style jsx for components or just use standard CSS in the `/static/styles` directory. I've included [Tachyons atomic css framework](http://tachyons.io/) in the main stylesheet as a nice helper. Remove it if you hate atomic styles but I found this helps a ton in sticking to only styled jsx by providing great utility classes to re-use.
+
+*Note: packages for SASS and CSS for this project were horribly under-documented and did not make easy use of things like @import which would allow for niceties like SASS variables and mixins. Long story short CSS should be relatively minimal if using styled JSX and we can now use CSS variables native support.*
 
 ## Fonts and Images
 
-Fonts and images can go into the `/assets` directory either in their own folders or in bulk. We can then import fonts into the stylesheets as needed from there.
+Fonts and images can go into the `/assets` directory either in their own folders or in bulk. We can then import fonts into the stylesheets as needed from there. 
+
+## robots.txt and sitemap.xml
+
+These two files sit in the static directory. We have provided these to get you started. A great project would be dynamic sitemap.xml from contentful as a nightly chron job. Since SEO is pretty much the only reason we have to go through this whole rigamarole we might as well make that stuff awesome out of the box.
+
+## Progress Bar
+
+One thing that can get pretty annoying to users is clicking links that fetch contentful data and nothing happening. Is nothing really happening? Nope. We just need to give users some feedback. This uses the [next-nprogress](https://www.npmjs.com/package/next-nprogress) package and a custom app wrapper to achieve. Thank you [sergiodxa](https://www.npmjs.com/~sergiodxa). Check the [docs](https://github.com/rstacruz/nprogress) for more [configuration options](https://github.com/rstacruz/nprogress#configuration).
