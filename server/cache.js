@@ -1,8 +1,9 @@
 function getCacheKey (req) {
+    // can be modified to create unique keys for cache objs
     return `${req.url}`;
 }
 
-async function renderAndCache(app, ssrCache, req, res, pagePath, queryParams) {
+exports.renderAndCache = async function(app, ssrCache, req, res, pagePath, queryParams) {
     const key = getCacheKey(req);
 
     // If we have a page in the cache, let's serve it
@@ -31,7 +32,3 @@ async function renderAndCache(app, ssrCache, req, res, pagePath, queryParams) {
         app.renderError(err, req, res, pagePath, queryParams);
     }
 }
-
-module.exports = {
-    renderAndCache
-};
