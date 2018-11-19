@@ -24,7 +24,7 @@ export default class Article extends Component {
       <Layout title={article.fields.pageTitle} description={article.fields.pageDescription}>
         <h1>{article.fields.title}</h1>
         <img src={`${article.fields.thumbnail.fields.file.url}?w=600`} />
-        <Marked content={article.fields.body} sanitize={true} />
+        <Marked content={article.fields.body} />
       </Layout>
     );
   }
