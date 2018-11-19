@@ -11,7 +11,7 @@ export default class Article extends Component {
     const res = await fetch(`http://localhost:3000/api/contentful?fields.slug=${id}&content_type=article&include=1`);
     const data = await res.json();
     const resData = await resolveResponse(data);
-    console.log(resData[0]);
+
     return { 
       article: resData[0]
     };

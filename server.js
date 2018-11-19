@@ -17,13 +17,14 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 // server routes
 const api = require('./server/routes/api');
-// pages
-const index = require('./server/routes/index');
-const about = require('./server/routes/about');
-const articles = require('./server/routes/articles');
+
 
 app.prepare().then(() => {
     const server = express();
+    // pages
+    const index = require('./server/routes/index');
+    const about = require('./server/routes/about');
+    const articles = require('./server/routes/articles');
 
     // security - like to not display the backend is built on express ;)
     server.disable('x-powered-by');
@@ -52,9 +53,10 @@ app.prepare().then(() => {
     server.use('/api', api);
 
     // pages
-    server.use('/', index);
-    server.use('/about', about);
-    server.use('/articles', articles);
+    server.get('/', index.index(app));
+    server.get('/about', about.index(app));
+    server.get('/articles', articles.index(app));
+    server.get('/articles/:id', articles.get(app));
     
     // next/js routes that don't require backend routes
     server.get('*', (req, res) => {
