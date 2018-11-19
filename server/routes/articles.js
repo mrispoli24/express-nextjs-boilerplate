@@ -1,20 +1,18 @@
-const express = require('express');
-const router = express.Router();
-const next = require('next');
-const dev = process.env.NODE_ENV !== 'production'
-const app = next({ dev });
+const LRUCache = require('lru-cache');
+const { renderAndCache } = require('../cache');
 
-app.prepare().then(() => {
-    router.get('/', (req, res) => {
-        const actualPage = '/articles';
-        app.render(req, res, actualPage);
-    });
+const ssrCache = new LRUCache({
+    max: 100,
+    maxAge: 1000 * 60 * 60 // 1hour
+});
 
-    router.get('/:id', (req, res) => {
-        const actualPage = '/article';
-        const queryParams = { id: req.params.id };
-        app.render(req, res, actualPage, queryParams);
-    });
-}); 
+exports.index = (app) => (req, res) => {
+    const actualPage = '/articles';
+    return renderAndCache(app, ssrCache, req, res, actualPage);
+}
 
-module.exports = router;
+exports.get = (app) => (req, res) => {
+    const actualPage = '/article';
+    const queryParams = { id: req.params.id };
+    renderAndCache(app, ssrCache, req, res, actualPage, queryParams);
+}

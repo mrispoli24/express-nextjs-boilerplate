@@ -1,14 +1,12 @@
-const express = require('express');
-const router = express.Router();
-const next = require('next');
-const dev = process.env.NODE_ENV !== 'production'
-const app = next({ dev });
+const LRUCache = require('lru-cache');
+const { renderAndCache } = require('../cache');
 
-app.prepare().then(() => {
-    router.get('/', (req, res) => {
-        const actualPage = '/index';
-        app.render(req, res, actualPage);
-    });
-}); 
+const ssrCache = new LRUCache({
+    max: 100,
+    maxAge: 1000 * 60 * 60 // 1hour
+});
 
-module.exports = router;
+exports.index = (app) => (req, res) => {
+    const actualPage = '/index';
+    return renderAndCache(app, ssrCache, req, res, actualPage);
+}

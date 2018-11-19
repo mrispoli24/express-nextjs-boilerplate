@@ -22,7 +22,39 @@ Setup environment file based upon the README.env environment file. Add your own 
 
 ## Server Side Routes
 
-All pages will require a server side route to maintain clean URL's. While you can still add files to the `/pages` directory, it is recommended you create a route in the server and then add that to the `server.js` file. These routes can now support get, post, put, and delete methods.
+All pages will require a server side route to maintain clean URL's. While you can still add files to the `/pages` directory, it is recommended you create a route in the server and then add that to the `server.js` file. These routes can now support get, post, put, and delete methods. 
+
+We also implment caching on each route individually via `LRU-cache`. This can be tweaked on a route by route basis in this way. Route methods are exported from their respective files in the `/server/routes` directory. The naming convention for each method is borrowed from Ruby on Rails. 
+
+|Method Name|Description|
+|-----------|-----------|
+|index      |Fetches all content of a certain type for an index page.|
+|get        |Fetches a single piece of contnet of a certain type.    |
+|post       |Post requests.                                          |
+|put        |Put requests.                                           |
+|delete     |Delete requests.                                        |
+
+You can then define these in your `server.js` file. First by requiring the appropriate route file, then by adding it's proper method to the proper express method. See below for example...
+
+```js
+app.prepare().then(() => {
+    ...
+    // pages
+    const index = require('./server/routes/index');
+    const about = require('./server/routes/about');
+    const articles = require('./server/routes/articles');
+
+    ... 
+
+    // pages
+    server.get('/', index.index(app));
+    server.get('/about', about.index(app));
+    server.get('/articles', articles.index(app));
+    server.get('/articles/:id', articles.get(app));
+
+    ...
+
+```
 
 A standard catch all `/api` route is provided for external services and masking, however, feel free to modify this to suit your needs.
 
