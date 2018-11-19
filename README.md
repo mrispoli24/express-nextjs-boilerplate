@@ -87,3 +87,35 @@ These two files sit in the static directory. We have provided these to get you s
 ## Progress Bar
 
 One thing that can get pretty annoying to users is clicking links that fetch contentful data and nothing happening. Is nothing really happening? Nope. We just need to give users some feedback. This uses the [next-nprogress](https://www.npmjs.com/package/next-nprogress) package and a custom app wrapper to achieve. Thank you [sergiodxa](https://www.npmjs.com/~sergiodxa). Check the [docs](https://github.com/rstacruz/nprogress) for more [configuration options](https://github.com/rstacruz/nprogress#configuration).
+
+## Markdown Parsing
+
+There are two packages for parsing markdown here. One is `react-markdown` which provides a nice component and can be used for many purposes. I have also provided `marked` which is a more robust markdown package that works with Contentful's unique flavor of markdown. It also provides quite a few options to it's docs. Be aware that use for marked is a bit different.
+
+*Marked Example:*
+
+```js
+import marked from 'marked'
+
+...
+
+render(){
+    return(
+        <div dangerouslySetInnerHTML={{__html: marked(article.fields.body, {sanitize: true, gfm: true})}} />
+    );
+}
+```
+
+*React Markdown Example:*
+
+```js
+import Markdown, { renderers } from 'react-markdown'
+
+...
+
+render(){
+    return(
+        <Markdown source={article.fields.body} />
+    );
+}
+```
