@@ -90,18 +90,18 @@ One thing that can get pretty annoying to users is clicking links that fetch con
 
 ## Markdown Parsing
 
-There are two packages for parsing markdown here. One is `react-markdown` which provides a nice component and can be used for many purposes. I have also provided `marked` which is a more robust markdown package that works with Contentful's unique flavor of markdown. It also provides quite a few options to it's docs. Be aware that use for marked is a bit different.
+There are two packages for parsing markdown here. One is `react-markdown` which provides a nice component and can be used for many purposes. I have also provided `marked` as a component which is a more robust markdown package that works with Contentful's unique flavor of markdown. It also provides quite a few options to it's docs. Be aware that use for marked is a bit different.
 
 *Marked Example:*
 
 ```js
-import marked from 'marked'
+import Marked from '../components/Marked'
 
 ...
 
 render(){
     return(
-        <div dangerouslySetInnerHTML={{__html: marked(article.fields.body, {sanitize: true, gfm: true})}} />
+        <Marked content={article.fields.body} sanitize={true} />
     );
 }
 ```

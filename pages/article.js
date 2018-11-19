@@ -1,8 +1,8 @@
 import { Component } from 'react'
-import Layout from '../components/Layout.js'
+import Layout from '../components/Layout'
 import fetch from 'isomorphic-unfetch'
 import resolveResponse from 'contentful-resolve-response'
-import marked from 'marked'
+import Marked from '../components/Marked'
 
 // class component (allows for state)
 export default class Article extends Component {
@@ -24,7 +24,7 @@ export default class Article extends Component {
       <Layout title={article.fields.pageTitle} description={article.fields.pageDescription}>
         <h1>{article.fields.title}</h1>
         <img src={`${article.fields.thumbnail.fields.file.url}?w=600`} />
-        <div dangerouslySetInnerHTML={{__html: marked(article.fields.body, {sanitize: true, gfm: true})}} />
+        <Marked content={article.fields.body} sanitize={true} />
       </Layout>
     );
   }
