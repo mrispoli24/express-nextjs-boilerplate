@@ -95,7 +95,27 @@ There are two packages for parsing markdown here. One is `react-markdown` which 
 *Marked Example:*
 
 ```js
-<div dangerouslySetInnerHTML={{__html: marked(article.fields.body, {sanitize: true, gfm: true})}} />
+import marked from 'marked'
+
+...
+
+render(){
+    return(
+        <div dangerouslySetInnerHTML={{__html: marked(article.fields.body, {sanitize: true, gfm: true})}} />
+    );
+}
 ```
 
-You can further extract this into a component to suit your needs.
+*React Markdown Example:*
+
+```js
+import Markdown, { renderers } from 'react-markdown'
+
+...
+
+render(){
+    return(
+        <Markdown source={article.fields.body} />
+    );
+}
+```
