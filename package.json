@@ -6,6 +6,9 @@
   "author": "MRISPOLI24",
   "license": "MIT",
   "main": "server.js",
+  "engines": {
+    "node": "10.6.0"
+  },
   "scripts": {
     "dev": "nodemon server.js",
     "heroku-postbuild": "next build",

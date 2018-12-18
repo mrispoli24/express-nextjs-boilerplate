@@ -119,3 +119,43 @@ render(){
     );
 }
 ```
+
+## Config Vars
+
+Configuratin variables can be held in the server inside of a `.env` file as normal. For certain variables that are not security sensitive you may want these to be available to both the client and the server. An example is the root domain of the application for api calls that call an internal api that will toggle between localhost and your real domain depending upon the application. For this purpose you can use `next.config.js`. The `publicRuntimeConfig` object can be used to hoist these variables. For private variables that you only want to use in server side renders use the `serverRuntimeConfig` object.
+
+This file looks like this:
+
+```js
+// next.config.js
+
+module.exports = {
+  serverRuntimeConfig: { // Will only be available on the server side
+    mySecret: 'secret',
+    secondSecret: process.env.SECOND_SECRET // Pass through env variables
+  },
+  publicRuntimeConfig: { // config vars for client and server, useful for api calls to routes inside express
+    rootDomain: process.env.ROOT_DOMAIN,
+  }
+}
+```
+
+In your routes and components you will call this through like this:
+
+```js
+// page.js
+
+import getConfig from 'next/config';
+
+...
+
+Page.getInitialProps = async function(context) {
+  const {publicRuntimeConfig} = getConfig();
+
+  ...
+
+  const pageRes = await fetch(`${publicRuntimeConfig.rootDomain}/api/your_api_route`);
+  
+  ...
+
+```
