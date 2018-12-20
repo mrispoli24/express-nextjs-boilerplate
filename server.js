@@ -8,9 +8,10 @@ const numCPUs = require('os').cpus().length;
 const port = process.env.PORT || '3000';
 // express/next setup
 const express = require('express');
-const path = require('path');
+const { join } = require('path');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
+const { parse } = require('url');
 const next = require('next');
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev });
@@ -60,7 +61,20 @@ app.prepare().then(() => {
     
     // next/js routes that don't require backend routes
     server.get('*', (req, res) => {
-        return handle(req, res);
+      // setup static files from root like sitemap.xml || robots.txt || favicon.ico
+      const parsedUrl = parse(req.url, true);
+      const rootStaticFiles = [
+        '/robots.txt',
+        '/sitemap.xml', 
+        '/favicon.ico'
+      ];
+
+      if (rootStaticFiles.indexOf(parsedUrl.pathname) > -1) {
+        const path = join(__dirname, 'static', parsedUrl.pathname);
+        return app.serveStatic(req, res, path);
+      }
+      // else serve page if not required by server
+      return handle(req, res);
     });
 
     if (dev) {

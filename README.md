@@ -159,3 +159,27 @@ Page.getInitialProps = async function(context) {
   ...
 
 ```
+
+## Static Files
+
+All static files can be placed in the `/static` directory. However, in certain cases you may want some of these files to serve from the root directory. Examples of this are `sitemap.xml`, `robots.txt`, and `favicon.ico`. In this case you can add these to the `rootStaticFiles` array of in the `server.js` file so they will be served off of the root. You should still place these files in the base of the `/static` file directory.
+
+```js
+// next/js routes that don't require backend routes
+server.get('*', (req, res) => {
+  // setup static files from root like sitemap.xml || robots.txt || favicon.ico
+  const parsedUrl = parse(req.url, true);
+  const rootStaticFiles = [
+    '/robots.txt',
+    '/sitemap.xml', 
+    '/favicon.ico'
+  ];
+
+  if (rootStaticFiles.indexOf(parsedUrl.pathname) > -1) {
+    const path = join(__dirname, 'static', parsedUrl.pathname);
+    return app.serveStatic(req, res, path);
+  }
+  // else serve page if not required by server
+  return handle(req, res);
+});
+```
