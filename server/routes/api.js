@@ -5,10 +5,8 @@ router.use('/contentful', (req, res, next) => {
     const url = require('url');
     const contentful = require('contentful');   
     const spaceId = process.env.CONTENTFUL_SPACE_ID;
-    const accessToken = process.env.CONTENTFUL_PREVIEW_MODE ? process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN : process.env.CONTENTFUL_ACCESS_TOKEN;
-    const host = process.env.CONTENTFUL_PREVIEW_MODE ? 'preview.contentful.com' : 'cdn.contentful.com';
-
-    console.log('access', accessToken);
+    const accessToken = process.env.CONTENTFUL_PREVIEW_MODE === 'true' ? process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN : process.env.CONTENTFUL_ACCESS_TOKEN;
+    const host = process.env.CONTENTFUL_PREVIEW_MODE === 'true' ? 'preview.contentful.com' : 'cdn.contentful.com';
 
     req.client = contentful.createClient({
         space: spaceId,

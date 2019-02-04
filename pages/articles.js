@@ -41,9 +41,17 @@ const Articles = (props) => (
     </Layout>
 )
   
-Articles.getInitialProps = async function() {
-    const res = await fetch(`http://localhost:3000/api/contentful?content_type=article`)
-    const data = await res.json()
+Articles.getInitialProps = async function(context) {
+    const options = {credentials: 'same-origin'}
+
+    if (typeof context !== 'undefined') {
+      options.headers = {
+        Authorization: context.req.headers.authorization
+      }
+    }
+
+    const contentfulRes = await fetch(`http://localhost:3000/api/contentful?content_type=article`, options)
+    const data = await contentfulRes.json()
 
     return {
         articles: data

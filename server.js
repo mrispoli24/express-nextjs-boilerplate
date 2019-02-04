@@ -32,15 +32,24 @@ app.prepare().then(() => {
 
     // server auth - if you want to password protect a staging site here's a nice easy way to do it
     if (process.env.BASIC_AUTH_ENABLED === 'true') {
-        const basicAuth = require('express-basic-auth');
-        let users = {};
-        users[process.env.BASIC_AUTH_USERNAME] = process.env.BASIC_AUTH_PASSWORD;
+      const auth = require('basic-auth');
+      let admins = {};
 
-        server.use(basicAuth({
-            users,
-            challenge: true,
-            realm: 'Imb4T3st4pp'
-        }));
+      admins[process.env.BASIC_AUTH_USERNAME] = {password: process.env.BASIC_AUTH_PASSWORD};
+
+      const authenticate = (req, res, next) => {
+        const user = auth(req);
+
+        if (!user || !admins[user.name] || admins[user.name].password !== user.pass) {
+          res.set('WWW-Authenticate', 'Basic realm="Access to application"');
+          return res.status(401).send();
+        }
+
+        req.user = user;
+        return next();
+      };
+
+      server.use(authenticate);
     }
 
     // logs

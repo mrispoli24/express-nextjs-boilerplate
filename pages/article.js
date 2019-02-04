@@ -8,8 +8,16 @@ import Marked from '../components/Marked'
 export default class Article extends Component {
   static async getInitialProps(context) {
     const { id } = context.query;
-    const res = await fetch(`http://localhost:3000/api/contentful?fields.slug=${id}&content_type=article&include=1`);
-    const data = await res.json();
+    const options = {credentials: 'same-origin'}
+
+    if (typeof context !== 'undefined') {
+      options.headers = {
+        Authorization: context.req.headers.authorization
+      }
+    }
+
+    const contentfulRes = await fetch(`http://localhost:3000/api/contentful?fields.slug=${id}&content_type=article&include=1`, options);
+    const data = await contentfulRes.json();
     const resData = await resolveResponse(data);
 
     return { 

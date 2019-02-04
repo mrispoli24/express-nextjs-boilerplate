@@ -183,3 +183,60 @@ server.get('*', (req, res) => {
   return handle(req, res);
 });
 ```
+
+## Basic Auth
+
+I've included basic auth to password protect the appliation using a plaintext username and password set in the environment file. This is NOT to be used for super sensitive appliations housing major trade secrets or people's personal info. If you just need to protect a staging site or server while developing or to create a content preview application for Contentful then this is your jam.
+
+To enable add these to your `.env` file:
+
+```
+BASIC_AUTH_ENABLED = true
+BASIC_AUTH_USERNAME = 'admin'
+BASIC_AUTH_PASSWORD = 'supersecret'
+```
+
+*You should use the username and password that you would like for this*
+
+Just enabling this WILL throw errors in your pages that make internal API calls in `getInitialProps`. This is because you need to pass the credentials into these calls. You will need to get the `res` argument from next here to access the basic authentication header.
+
+Here it is in a functional component: 
+
+```js
+Article.getInitialProps = async function(context) {
+  const options = {credentials: 'same-origin'} // need this header to pass creds for the client side
+
+   // need this to pass creds server side
+  if (typeof context !== 'undefined') {
+    options.headers = {
+      Authorization: context.req.headers.authorization
+    }
+  }
+
+  // pass options as second argument to fetch
+  const contentfulRes = await fetch(`http://localhost:3000/api/contentful?content_type=article`, options)
+
+  ...
+
+```
+
+Here it is in a Class based component:
+
+```js
+export default class Article extends Component {
+  static async getInitialProps(context) {
+    const { id } = context.query;
+    const options = {credentials: 'same-origin'}
+
+    if (typeof res !== 'undefined') {
+      options.headers = {
+        Authorization: context.req.headers.authorization
+      }
+    }
+
+    const contentfulRes = await fetch(`http://localhost:3000/api/contentful?fields.slug=${id}&content_type=article&include=1`, options);
+
+    ...
+```
+
+This is included in both example routes with `getInitialProps` since I do find it helpful to password protect staging servers most of the time.
