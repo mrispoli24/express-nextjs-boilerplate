@@ -82,7 +82,7 @@ Fonts and images can go into the `/assets` directory either in their own folders
 
 ## robots.txt and sitemap.xml
 
-These two files sit in the static directory. We have provided these to get you started. A great project would be dynamic sitemap.xml from contentful as a nightly chron job. Since SEO is pretty much the only reason we have to go through this whole rigamarole we might as well make that stuff awesome out of the box.
+These two files sit in the static directory. We have provided these to get you started. We have also provided a sample sitmap generator script inside of the `/jobs` directory. This can be run on a chron and sent out to a CDN for dynamic hosting or just checked into source and built periodically with your deploys. Since SEO is pretty much the only reason we have to go through this whole rigamarole we might as well make that stuff awesome out of the box.
 
 ## Progress Bar
 
@@ -240,3 +240,7 @@ export default class Article extends Component {
 ```
 
 This is included in both example routes with `getInitialProps` since I do find it helpful to password protect staging servers most of the time.
+
+## Jobs
+
+The jobs folder is for any node jobs you may want to run as automated tasks or chron jobs. We have provided a sample for creating a sitemap from contentful content on site.

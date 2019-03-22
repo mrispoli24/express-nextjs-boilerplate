@@ -13,7 +13,8 @@
     "dev": "nodemon server.js",
     "heroku-postbuild": "next build",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js"
+    "start": "NODE_ENV=production node server.js",
+    "sitemap": "node ./jobs/sitemap.js"
   },
   "dependencies": {
     "basic-auth": "^2.0.1",
@@ -30,7 +31,8 @@
     "node-sass": "^4.10.0",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
-    "react-markdown": "^4.0.3"
+    "react-markdown": "^4.0.3",
+    "xmlbuilder": "^11.0.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.4"
